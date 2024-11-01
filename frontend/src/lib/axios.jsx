@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://election-blush.vercel.app/api",
+  baseURL: "https://election-lmbm.vercel.app/api",
   withCredentials: true,
 });
 
