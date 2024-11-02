@@ -38,8 +38,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.listen(5000, () => {
-  console.log("Server running on port http://localhost:" + PORT);
-
   connectDB();
-});
+
+export default app;
