@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
 const corsOptions = {
-  origin: "https://election-rho-two.vercel.app", // Allow only this origin
+  origin: "https://election-brown.vercel.app", // Allow only this origin
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
 
