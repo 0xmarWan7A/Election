@@ -33,7 +33,7 @@ const RegisterPage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-yellow-400">
+        <h2 className="mt-12 sm:mt-6 text-center text-xl sm:text-3xl font-extrabold text-yellow-400">
           Create your account
         </h2>
       </motion.div>
