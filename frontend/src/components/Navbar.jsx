@@ -17,7 +17,7 @@ const Navbar = () => {
             المنتدي الكشفي الاول
           </Link>
 
-          <nav className="flex flex-nowrap sm:flex-wrap items-center gap-6 mt-2 sm:mt-0">
+          <nav className="flex flex-nowrap sm:flex-wrap items-center gap-8 sm:gap-6 mt-2 sm:mt-0">
             <Link
               to={"/"}
               className="text-gray-300 hover:text-yellow-400 transition duration-300
