@@ -12,7 +12,7 @@ const Navbar = () => {
         <div className="flex flex-wrap justify-center items-center sm:justify-between">
           <Link
             to="/"
-            className="text-2xl font-bold text-yellow-400 items-center space-x-2 flex"
+            className="text-xl sm:text-2xl font-bold text-yellow-400 items-center space-x-2 flex"
           >
             منتدى سنوسرت الاول لكشافة الاسماعيلية
           </Link>
