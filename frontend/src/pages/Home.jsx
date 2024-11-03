@@ -9,7 +9,12 @@ const Home = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-center text-xl sm:text-4xl font-bold text-yellow-400 mt-20 mb-2 sm:mb-4">
+                <img
+          className="mx-auto object-cover w-40 h- mt-12"
+          src="/logo.png"
+          alt="منتدى سنوسرت الاول لكشافة الاسماعيلية"
+        />
+        <h1 className="text-center text-xl sm:text-4xl font-bold text-yellow-400 mb-2 sm:mb-4">
     منتدى سنوسرت الاول لكشافة الاسماعيلية
         </h1>
         <p className="text-center text-md sm:text-xl text-gray-300 mb-12">
