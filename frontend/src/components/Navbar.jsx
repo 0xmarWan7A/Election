@@ -14,7 +14,7 @@ const Navbar = () => {
             to="/"
             className="text-2xl font-bold text-yellow-400 items-center space-x-2 flex"
           >
-            المنتدي الكشفي الاول
+            منتدى سنوسرت الاول لكشافة الاسماعيلية
           </Link>
 
           <nav className="flex flex-nowrap sm:flex-wrap items-center gap-12 sm:gap-6 mt-2 sm:mt-0">
