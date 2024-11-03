@@ -27,4 +27,16 @@ export const useVoteStore = create((set) => ({
       toast.error(error.response?.data?.message);
     }
   },
+
+  clearVote: async (userId) => {
+    set({ loading: true });
+    try {
+      const { data } = await api.delete(`/vote/${userId}`);
+      toast.success(data.message);
+      set({ loading: false });
+    } catch (error) {
+      set({ loading: false });
+      toast.error(error.response?.data?.message);
+    }
+  },
 }));
