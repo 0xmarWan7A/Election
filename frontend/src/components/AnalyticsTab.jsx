@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-// import { Trash } from "lucide-react";
+import { RotateCw } from "lucide-react";
 import { useVoteStore } from "../stores/useVoteStore";
 
 const UsersList = () => {
-  const { votes } = useVoteStore();
+  const { clearVote, votes } = useVoteStore();
   return (
     <motion.div
       className="bg-gray-800 shadow-lg rounded-lg overflow-hidden max-w-4xl mx-auto"
@@ -45,6 +45,12 @@ const UsersList = () => {
             >
               VoteDate
             </th>
+            <th
+              scope="col"
+              className="px-3 sm:px-6 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              Action
+            </th>
           </tr>
         </thead>
 
@@ -72,14 +78,14 @@ const UsersList = () => {
                   {vote.voteDate ? vote.voteDate : "null"}
                 </div>
               </td>
-              {/* <td className="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm font-medium">
+              <td className="px-3 sm:px-6 py-2 sm:py-4 whitespace-nowrap text-sm font-medium">
                 <button
-                  onClick={() => deleteCandidate(candidate._id)}
-                  className="text-red-400 hover:text-red-300"
+                  onClick={() => clearVote(vote.id)}
+                  className="text-blue-400 hover:text-blue-300"
                 >
-                  <Trash className="size-2 sm:size-5" />
+                  <RotateCw className="size-2 sm:size-5" />
                 </button>
-              </td> */}
+              </td>
             </tr>
           ))}
         </tbody>
