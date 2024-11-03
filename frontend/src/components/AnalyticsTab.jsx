@@ -16,38 +16,38 @@ const UsersList = () => {
           <tr>
             <th
               scope="col"
-              className="px-3 sm:px-6 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+              className="px-3 sm:px-3 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
             >
               User
             </th>
             <th
               scope="col"
-              className="px-3 sm:px-6 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+              className="px-3 sm:px-3 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
             >
               Email
             </th>
             <th
               scope="col"
-              className="px-3 sm:px-6 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+              className="px-3 sm:px-3 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
             >
               hasVoted
             </th>
             <th
               scope="col"
-              className="px-3 sm:px-6 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+              className="px-3 sm:px-3 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
             >
               VoteTo
             </th>
 
             <th
               scope="col"
-              className="px-3 sm:px-6 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+              className="px-3 sm:px-3 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
             >
               VoteDate
             </th>
             <th
               scope="col"
-              className="px-3 sm:px-6 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+              className="px-3 sm:px-3 py-1 sm:py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
             >
               Action
             </th>
