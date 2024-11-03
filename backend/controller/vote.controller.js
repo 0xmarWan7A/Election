@@ -45,6 +45,7 @@ export const listUsersWithVotingInfo = async (req, res) => {
       );
 
       return {
+        id: user._id,
         username: user.username,
         email: user.email,
         hasVoted: !!userVote,
@@ -59,32 +60,32 @@ export const listUsersWithVotingInfo = async (req, res) => {
   } catch (error) {
     console.error("Error fetching users with voting info:", error);
   }
-  // try {
-  //   const users = await User.find({});
-  //   const votes = await Vote.find()
-  //     .populate("user", "username email")
-  //     .populate("candidate", "fullname");
+};
 
-  //   const usersWithVotingInfo = users.map((user) => {
-  //     const userVote = votes.find(
-  //       (vote) => vote.user._id.toString() === user._id.toString()
-  //     );
-  //     return {
-  //       username: user.username,
-  //       email: user.email,
-  //       hasVoted: !!userVote,
-  //       votedTo: userVote ? userVote.candidate.fullname : null,
-  //       voteDate: userVote
-  //         ? moment(userVote.timestamp).format("MMMM Do YYYY, h:mm:ss a")
-  //         : null,
-  //     };
-  //   });
+export const clearUserVote = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
 
-  //   res.status(200).json(usersWithVotingInfo);
-  // } catch (error) {
-  //   console.error("Error fetching users with voting info:", error);
-  //   res
-  //     .status(500)
-  //     .json({ message: "Failed to retrieve user voting information." });
-  // }
+    const data = await Vote.findOne({ user: user._id });
+
+    if (!data) {
+      return res.status(404).json({ message: "user has not voted" });
+    }
+
+    const candidate = await Candidate.findById(data.candidate);
+    if (!candidate) {
+      return res.status(404).json({ message: "candidate not found" });
+    }
+    candidate.votes -= 1;
+    await candidate.save();
+    await User.findByIdAndUpdate(id, { hasVoted: false });
+    await Vote.findByIdAndDelete(data._id);
+    res.status(200).json({ message: "user vote cleared successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
