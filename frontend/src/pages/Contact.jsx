@@ -110,7 +110,7 @@ const ContactUS = () => {
                     onChange={(e) => setName(e.target.value)}
                     className=" block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 
 									rounded-md shadow-sm
-									 placeholder-gray-400 focus:outline-none focus:ring-yellow-500 
+									 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 
 									 focus:border-yellow-500 sm:text-sm"
                     placeholder="Your Name"
                   />
@@ -139,7 +139,7 @@ const ContactUS = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     className=" block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 
 									rounded-md shadow-sm
-									 placeholder-gray-400 focus:outline-none focus:ring-yellow-500 
+									 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 
 									 focus:border-yellow-500 sm:text-sm"
                     placeholder="Your Email Address"
                   />
