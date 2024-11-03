@@ -55,7 +55,7 @@ const ContactUS = () => {
               size={40}
               aria-hidden="true"
             />
-            <span className="sm:inline">Suez, Egypt</span>
+            <span className="sm:inline">Ismailia, Egypt</span>
           </div>
           <div
             className="flex gap-5 sm:gap-20 ml-10 sm:ml-0 items-center mt-10 text-gray-300 hover:text-yellow-400 transition duration-300
