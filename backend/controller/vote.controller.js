@@ -51,7 +51,7 @@ export const listUsersWithVotingInfo = async (req, res) => {
         hasVoted: !!userVote,
         votedTo: userVote ? userVote.candidate.fullname : null,
         voteDate: userVote
-          ? moment(userVote.timestamp).format("MMMM Do YYYY, h:mm:ss a")
+          ? moment(userVote.timestamp).format("MMMM Do YYYY, h:mm:ss a").tz("Africa/Cairo")
           : null,
       };
     });
