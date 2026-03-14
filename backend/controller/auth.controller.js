@@ -84,35 +84,42 @@ export const login = async (req, res) => {
       });
     }
 
+    // Ensure database is connected
+    await connectDB();
+
     console.log("Finding user:", username);
-    const user = await User.findOne({ username });
-    console.log("User found:", user ? "Yes" : "No");
+    const user = await User.findOne({ username }).maxTimeMS(5000); // Add timeout
 
     if (!user) {
+      console.log("❌ User not found");
       return res.status(401).json({
         success: false,
         message: "Invalid username or password",
       });
     }
 
-    console.log("Comparing password...");
+    console.log("✅ User found, comparing password...");
     const isPasswordValid = await user.comparePassword(password);
-    console.log("Password valid:", isPasswordValid);
 
     if (!isPasswordValid) {
+      console.log("❌ Invalid password");
       return res.status(401).json({
         success: false,
         message: "Invalid username or password",
       });
     }
 
-    console.log("Generating tokens...");
+    console.log("✅ Password valid, generating tokens...");
     const { accessToken, refreshToken } = generateAuthToken(user._id);
 
-    console.log("Storing refresh token...");
-    await storeRefreshToken(user._id, refreshToken);
+    // Try to store refresh token but don't fail if Redis is down
+    try {
+      await storeRefreshToken(user._id, refreshToken);
+    } catch (redisError) {
+      console.error("⚠️ Redis error (non-critical):", redisError.message);
+      // Continue without Redis
+    }
 
-    console.log("Setting cookies...");
     setCookies(res, accessToken, refreshToken);
 
     console.log("✅ Login successful for:", username);
@@ -130,11 +137,17 @@ export const login = async (req, res) => {
       message: "User logged in successfully",
     });
   } catch (error) {
-    console.error("❌ Login error details:", {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
-    });
+    console.error("❌ Login error:", error);
+
+    // Check for specific MongoDB errors
+    if (error.name === "MongooseError" || error.name === "MongoError") {
+      return res.status(503).json({
+        success: false,
+        message: "Database connection error. Please try again.",
+        retry: true,
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "Internal server error",
