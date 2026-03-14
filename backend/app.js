@@ -19,7 +19,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://your-frontend.vercel.app", // Add your actual frontend URL
+  "https://election-brown.vercel.app", // Add your actual frontend URL
 ];
 
 if (process.env.CORS_ORIGIN) {
