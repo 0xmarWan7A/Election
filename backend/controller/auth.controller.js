@@ -19,7 +19,7 @@ const storeRefreshToken = async (userId, refreshToken) => {
     `refreshToken:${userId}`,
     refreshToken,
     "EX",
-    7 * 24 * 60 * 60
+    7 * 24 * 60 * 60,
   );
 };
 
@@ -27,13 +27,13 @@ const setCookies = (res, accessToken, refreshToken) => {
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "none",
+    sameSite: "strict",
     maxAge: 15 * 60 * 1000,
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "none",
+    sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
@@ -108,12 +108,17 @@ export const logOut = async (req, res) => {
       return res.status(401).json({ message: "unauthorized" });
     }
 
-    const userId = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    if (!userId) {
-      return res.status(401).json({ message: "unauthorized" });
+    try {
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+      );
+      await redis.del(`refreshToken:${decoded.userId}`);
+    } catch (error) {
+      // Token is invalid, but we still want to clear cookies
+      console.log("Invalid refresh token during logout:", error.message);
     }
 
-    await redis.del(`refreshToken:${userId.userId}`);
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     res.status(200).json({ message: "logged out successfully" });
@@ -147,13 +152,13 @@ export const refreshToken = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "15m",
-      }
+      },
     );
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
-      sameSite: "none",
+      sameSite: "strict",
       maxAge: 15 * 60 * 1000,
     });
     res.status(200).json({ message: "Token refreshed successfully" });

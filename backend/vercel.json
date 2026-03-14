@@ -6,11 +6,15 @@
       "use": "@vercel/node"
     }
   ],
-
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/app.js"
+      "dest": "/app.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     }
-  ]
+  ],
+  "env": {
+    "CORS_ORIGIN": "https://election-brown.vercel.app/",
+    "NODE_ENV": "production"
+  }
 }
