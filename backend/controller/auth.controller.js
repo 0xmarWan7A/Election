@@ -27,30 +27,49 @@ const storeRefreshToken = async (userId, refreshToken) => {
 const setCookies = (res, accessToken, refreshToken) => {
   const isProduction = process.env.NODE_ENV === "production";
 
-  // Cookie options
-  const cookieOptions = {
-    httpOnly: true,
-    secure: isProduction, // Use secure in production
-    sameSite: isProduction ? "none" : "lax", // 'none' allows cross-site requests
-    path: "/",
-    domain: isProduction ? ".vercel.app" : undefined, // Adjust domain as needed
-  };
+  // For production (frontend on Vercel, backend on Vercel)
+  if (isProduction) {
+    // Vercel to Vercel communication
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none", // Critical for cross-site requests
+      domain: ".vercel.app", // Allow cookies across Vercel subdomains
+      path: "/",
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
 
-  res.cookie("accessToken", accessToken, {
-    ...cookieOptions,
-    maxAge: 15 * 60 * 1000, // 15 minutes
-  });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      domain: ".vercel.app",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+  } else {
+    // Development (localhost)
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 15 * 60 * 1000,
+    });
 
-  res.cookie("refreshToken", refreshToken, {
-    ...cookieOptions,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+  }
 
-  console.log("🍪 Cookies set:", {
-    accessToken: !!accessToken,
-    refreshToken: !!refreshToken,
-    options: cookieOptions,
-  });
+  console.log(
+    "🍪 Cookies set for environment:",
+    isProduction ? "production" : "development",
+  );
 };
 
 export const register = async (req, res) => {

@@ -30,8 +30,10 @@ if (process.env.CORS_ORIGIN) {
 
 const corsOptions = {
   origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl)
+    if (!origin) return callback(null, true);
+
     if (
-      !origin ||
       allowedOrigins.includes(origin) ||
       process.env.NODE_ENV !== "production"
     ) {
@@ -41,7 +43,7 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true, // This is crucial for cookies
+  credentials: true, // MUST be true for cookies
   optionsSuccessStatus: 200,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: [
@@ -51,6 +53,18 @@ const corsOptions = {
     "Accept",
   ],
 };
+
+app.use(cors(corsOptions));
+
+// Important: Handle preflight requests explicitly
+app.options("*", cors(corsOptions));
+
+// Add this middleware to log cookies
+app.use((req, res, next) => {
+  console.log("🍪 Incoming cookies:", req.cookies);
+  console.log("🔑 Has accessToken:", !!req.cookies?.accessToken);
+  next();
+});
 
 app.use(cors(corsOptions));
 
