@@ -5,13 +5,16 @@ import {
   deleteCandidate,
   getCandidateByPosition,
 } from "../controller/candidates.controller.js";
-import { adminAuth, candidateRoute } from "../middleware/auth.middleware.js";
+import { adminAuth, protect } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", candidateRoute, getAllCandidates);
-router.get("/:position", getCandidateByPosition);
-router.post("/", candidateRoute, adminAuth, createCandidate);
-router.delete("/:id", candidateRoute, adminAuth, deleteCandidate);
+// Make these routes public (no authentication needed)
+router.get("/", getAllCandidates); // Remove protect middleware
+router.get("/:position", getCandidateByPosition); // Already public
+
+// Keep these protected (admin only)
+router.post("/", protect, adminAuth, createCandidate);
+router.delete("/:id", protect, adminAuth, deleteCandidate);
 
 export default router;

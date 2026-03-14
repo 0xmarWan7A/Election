@@ -25,17 +25,31 @@ const storeRefreshToken = async (userId, refreshToken) => {
 };
 
 const setCookies = (res, accessToken, refreshToken) => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  // Cookie options
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction, // Use secure in production
+    sameSite: isProduction ? "none" : "lax", // 'none' allows cross-site requests
+    path: "/",
+    domain: isProduction ? ".vercel.app" : undefined, // Adjust domain as needed
+  };
+
   res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== "development",
-    sameSite: "strict",
-    maxAge: 15 * 60 * 1000,
+    ...cookieOptions,
+    maxAge: 15 * 60 * 1000, // 15 minutes
   });
+
   res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== "development",
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    ...cookieOptions,
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  console.log("🍪 Cookies set:", {
+    accessToken: !!accessToken,
+    refreshToken: !!refreshToken,
+    options: cookieOptions,
   });
 };
 

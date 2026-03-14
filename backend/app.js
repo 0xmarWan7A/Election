@@ -29,8 +29,7 @@ if (process.env.CORS_ORIGIN) {
 }
 
 const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl)
+  origin: function (origin, callback) {
     if (
       !origin ||
       allowedOrigins.includes(origin) ||
@@ -38,13 +37,25 @@ const corsOptions = {
     ) {
       callback(null, true);
     } else {
-      console.log("Blocked origin:", origin);
+      console.log("🚫 Blocked origin:", origin);
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true,
+  credentials: true, // This is crucial for cookies
   optionsSuccessStatus: 200,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+  ],
 };
+
+app.use(cors(corsOptions));
+
+// Important: Handle preflight requests
+app.options("*", cors(corsOptions));
 
 // Middleware
 app.use(cors(corsOptions));
@@ -55,34 +66,6 @@ app.use(cookieParser());
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
-});
-
-app.get("/api/test-db", async (req, res) => {
-  try {
-    console.log("Testing database connection...");
-
-    // Force new connection
-    await connectDB();
-
-    // Try a simple query
-    const collections = await mongoose.connection.db
-      .listCollections()
-      .toArray();
-
-    res.json({
-      success: true,
-      message: "Database connected",
-      collections: collections.map((c) => c.name),
-      connectionState: mongoose.connection.readyState,
-    });
-  } catch (error) {
-    console.error("Database test failed:", error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      connectionState: mongoose.connection?.readyState,
-    });
-  }
 });
 
 // Routes
