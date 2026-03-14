@@ -19,18 +19,23 @@ export const connectDB = async () => {
 
     if (!cached.promise) {
       const opts = {
-        bufferCommands: false,
-        bufferMaxEntries: 0,
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+        bufferCommands: false, // Don't buffer commands when disconnected
         serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
         socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
         family: 4, // Use IPv4, skip trying IPv6
         maxPoolSize: 10, // Maintain up to 10 socket connections
         minPoolSize: 0, // Allow connections to scale down to 0
+        connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
+        retryWrites: true,
+        retryReads: true,
       };
 
       console.log("🔄 Connecting to MongoDB...");
+      console.log(
+        "MongoDB URI:",
+        process.env.MONGO_URI?.replace(/:[^:]*@/, ":****@"),
+      ); // Hide password in logs
+
       cached.promise = mongoose.connect(process.env.MONGO_URI, opts);
     }
 
@@ -39,7 +44,19 @@ export const connectDB = async () => {
     return cached.conn;
   } catch (error) {
     console.error("❌ MongoDB Connection Error:", error.message);
+    console.error("Full error:", error);
     cached.promise = null;
-    throw error; // Re-throw to handle in the route
+    throw error;
   }
 };
+
+// Add disconnect handler
+mongoose.connection.on("disconnected", () => {
+  console.log("⚠️ MongoDB disconnected");
+  cached.conn = null;
+  cached.promise = null;
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error("⚠️ MongoDB connection error:", err);
+});

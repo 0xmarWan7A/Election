@@ -1,6 +1,7 @@
 import { User } from "../models/user.models.js";
 import jwt from "jsonwebtoken";
 import { redis } from "../lib/redis.js";
+import { connectDB } from "./lib/db.js";
 
 const generateAuthToken = (userId) => {
   const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
