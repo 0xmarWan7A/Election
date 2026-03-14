@@ -55,7 +55,7 @@ const ContactUS = () => {
               size={40}
               aria-hidden="true"
             />
-            <span className="sm:inline">Ismailia, Egypt</span>
+            <span className="sm:inline">Suez, Egypt</span>
           </div>
           <div
             className="flex gap-5 sm:gap-20 ml-10 sm:ml-0 items-center mt-10 text-gray-300 hover:text-yellow-400 transition duration-300
@@ -66,7 +66,7 @@ const ContactUS = () => {
               aria-hidden="true"
               size={30}
             />
-            <span className="sm:inline">+20 1222594438</span>
+            <span className="sm:inline">+999999999999</span>
           </div>
           <div
             className="flex gap-5 sm:gap-20 ml-10 sm:ml-0 items-center mt-10 text-gray-300 hover:text-yellow-400 transition duration-300
@@ -77,7 +77,7 @@ const ContactUS = () => {
               aria-hidden="true"
               size={30}
             />
-            <span className="sm:inline">sonosertscoutgroup@gmail.com</span>
+            <span className="sm:inline">email@domain.com</span>
           </div>
         </motion.div>
         <motion.div
@@ -110,7 +110,7 @@ const ContactUS = () => {
                     onChange={(e) => setName(e.target.value)}
                     className=" block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 
 									rounded-md shadow-sm
-									 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 
+									 placeholder-gray-400 focus:outline-none focus:ring-yellow-500 
 									 focus:border-yellow-500 sm:text-sm"
                     placeholder="Your Name"
                   />
@@ -139,7 +139,7 @@ const ContactUS = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     className=" block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 
 									rounded-md shadow-sm
-									 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 
+									 placeholder-gray-400 focus:outline-none focus:ring-yellow-500 
 									 focus:border-yellow-500 sm:text-sm"
                     placeholder="Your Email Address"
                   />
@@ -168,7 +168,7 @@ const ContactUS = () => {
                     onChange={(e) => setSubject(e.target.value)}
                     className=" block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 
 									rounded-md shadow-sm
-									 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 
+									 placeholder-gray-400 focus:outline-none focus:ring-yellow-500 
 									 focus:border-yellow-500 sm:text-sm"
                     placeholder="Subject"
                   />

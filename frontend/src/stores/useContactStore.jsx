@@ -6,21 +6,18 @@ export const useContactStore = create((set) => ({
   mail: null,
   loading: false,
 
-  sendMail: async (name, email, subject, message) => {
+  sendMail: async (formData) => {
+    // Accept single object instead of multiple params
     set({ loading: true });
     try {
-      const { data } = await axios.post(
-        "/contact-us",
-        name,
-        email,
-        subject,
-        message
-      );
+      const { data } = await axios.post("/contact-us", formData); // Send as object
       set({ mail: data, loading: false });
       toast.success(data.message);
+      return data;
     } catch (error) {
       set({ loading: false });
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to send message");
+      throw error;
     }
   },
 }));

@@ -12,9 +12,9 @@ const Navbar = () => {
         <div className="flex flex-wrap justify-center items-center sm:justify-between">
           <Link
             to="/"
-            className="text-xl sm:text-2xl font-bold text-yellow-400 items-center space-x-2 flex"
+            className="text-2xl font-bold text-yellow-400 items-center space-x-2 flex"
           >
-            منتدى سنوسرت الاول لكشافة الاسماعيلية
+            Elections Website
           </Link>
 
           <nav className="flex flex-nowrap sm:flex-wrap items-center gap-12 sm:gap-6 mt-2 sm:mt-0">
