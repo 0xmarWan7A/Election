@@ -36,31 +36,4 @@ api.interceptors.response.use(
   },
 );
 
-// Add to your axios configuration
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    // If error is 401 and not already retrying
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      try {
-        // Try to refresh the token
-        await api.post("/auth/refresh-token");
-        // Retry the original request
-        return api(originalRequest);
-      } catch (refreshError) {
-        // Refresh failed, redirect to login
-        console.log("Session expired, please login again");
-        // window.location.href = '/login';
-        return Promise.reject(refreshError);
-      }
-    }
-
-    return Promise.reject(error);
-  },
-);
-
 export default api;
