@@ -73,7 +73,6 @@ export const login = async (req, res) => {
   try {
     console.log("🔐 Login attempt started");
     console.log("Request body:", req.body);
-    console.log("Request headers:", req.headers);
 
     const { username, password } = req.body;
 
@@ -82,16 +81,6 @@ export const login = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Username and password are required",
-      });
-    }
-
-    // Test MongoDB connection
-    console.log("Checking MongoDB connection...");
-    if (mongoose.connection.readyState !== 1) {
-      console.log("❌ MongoDB not connected");
-      return res.status(500).json({
-        success: false,
-        message: "Database connection error",
       });
     }
 
@@ -149,7 +138,6 @@ export const login = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Internal server error",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };
