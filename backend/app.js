@@ -55,6 +55,23 @@ app.use((req, res, next) => {
   next();
 });
 
+// Add near the top of your routes
+app.get("/api/status", (req, res) => {
+  res.json({
+    status: "running",
+    timestamp: new Date().toISOString(),
+    mongodb:
+      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    environment: process.env.NODE_ENV,
+    endpoints: {
+      auth: "/api/auth",
+      candidates: "/api/candidates",
+      vote: "/api/vote",
+      contact: "/api/contact-us",
+    },
+  });
+});
+
 // Test route
 app.get("/api/test", (req, res) => {
   res.json({
