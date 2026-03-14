@@ -14,21 +14,24 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const __dirname = path.resolve();
-
-// Get allowed origins from environment variable
-const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(",")
-  : ["http://localhost:3000", "http://localhost:5173", "http://localhost:5174"];
-
 // CORS configuration
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, etc)
-    if (!origin) return callback(null, true);
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://your-frontend.vercel.app", // Add your actual frontend URL
+];
 
+if (process.env.CORS_ORIGIN) {
+  allowedOrigins.push(...process.env.CORS_ORIGIN.split(","));
+}
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl)
     if (
-      allowedOrigins.indexOf(origin) !== -1 ||
+      !origin ||
+      allowedOrigins.includes(origin) ||
       process.env.NODE_ENV !== "production"
     ) {
       callback(null, true);
@@ -37,18 +40,34 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true, // Allow credentials (cookies, authorization headers)
-  optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+  credentials: true,
+  optionsSuccessStatus: 200,
 };
 
-// Apply CORS middleware
+// Middleware
 app.use(cors(corsOptions));
-
-// Handle preflight requests
-app.options("*", cors(corsOptions));
-
 app.use(express.json({ limit: "50mb" }));
 app.use(cookieParser());
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
+// Test route
+app.get("/api/test", (req, res) => {
+  res.json({
+    success: true,
+    message: "Backend is working!",
+    timestamp: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+    cors: {
+      origin: req.headers.origin,
+      allowedOrigins,
+    },
+  });
+});
 
 // Routes
 app.use("/api/auth", auth);
@@ -56,46 +75,50 @@ app.use("/api/candidates", candidates);
 app.use("/api/vote", vote);
 app.use("/api/contact-us", contactUs);
 
-// Health check endpoint
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    status: "OK",
-    message: "Server is running",
-    environment: process.env.NODE_ENV,
+// 404 handler
+app.use("*", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
   });
 });
-
-// Serve static files in production
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/frontend/dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
-  });
-}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("Global error:", err);
 
-  // Handle CORS errors specifically
   if (err.message === "Not allowed by CORS") {
     return res.status(403).json({
+      success: false,
       message: "CORS error: Origin not allowed",
-      allowedOrigins: allowedOrigins,
+      allowedOrigins,
     });
   }
 
-  res.status(500).json({ message: "Something went wrong!" });
+  res.status(500).json({
+    success: false,
+    message: "Internal server error",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+  });
 });
 
-// Start server only if not in Vercel environment
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log("Server running on port " + PORT);
-    console.log("CORS enabled for origins:", allowedOrigins);
-    connectDB();
-  });
+// Start server
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+      console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
+      console.log(`🔗 Allowed origins:`, allowedOrigins);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
+  startServer();
 }
 
-// For Vercel
 export default app;
