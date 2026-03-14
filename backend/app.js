@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
@@ -55,21 +56,13 @@ app.use((req, res, next) => {
   next();
 });
 
-// Add near the top of your routes
-app.get("/api/status", (req, res) => {
-  res.json({
-    status: "running",
-    timestamp: new Date().toISOString(),
-    mongodb:
-      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
-    environment: process.env.NODE_ENV,
-    endpoints: {
-      auth: "/api/auth",
-      candidates: "/api/candidates",
-      vote: "/api/vote",
-      contact: "/api/contact-us",
-    },
-  });
+app.get("/api/ping", (req, res) => {
+  res.json({ message: "pong", time: Date.now() });
+});
+
+app.post("/api/test-post", (req, res) => {
+  console.log("Test POST received:", req.body);
+  res.json({ received: req.body });
 });
 
 // Test route
@@ -84,6 +77,27 @@ app.get("/api/test", (req, res) => {
       allowedOrigins,
     },
   });
+});
+
+app.get("/api/check-db", async (req, res) => {
+  try {
+    const mongoose = require("mongoose");
+    const state = mongoose.connection.readyState;
+    const states = {
+      0: "disconnected",
+      1: "connected",
+      2: "connecting",
+      3: "disconnecting",
+    };
+
+    res.json({
+      dbState: states[state] || "unknown",
+      readyState: state,
+      mongodb: !!process.env.MONGO_URI,
+    });
+  } catch (error) {
+    res.json({ error: error.message });
+  }
 });
 
 // Routes
