@@ -3,19 +3,22 @@ import axios from "axios";
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL || "https://election-api-ten.vercel.app/api",
-  withCredentials: true, // This is crucial for sending cookies
+  withCredentials: true, // MUST be true for cookies
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 10000,
 });
 
-// Add request interceptor to log cookies
+// Add request interceptor to ensure credentials are sent
 api.interceptors.request.use(
   (config) => {
+    // Ensure withCredentials is always true
+    config.withCredentials = true;
+
     console.log("🚀 Request:", config.method.toUpperCase(), config.url);
     console.log("📦 With Credentials:", config.withCredentials);
-    console.log("🍪 Cookies present:", document.cookie ? "Yes" : "No");
+    console.log("🍪 Cookies in document:", document.cookie || "None");
+
     return config;
   },
   (error) => {
@@ -23,14 +26,13 @@ api.interceptors.request.use(
   },
 );
 
-// Add response interceptor for better error handling
+// Add response interceptor
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.response?.status === 401) {
-      console.log("🔐 Authentication required - redirecting to login");
-      // You might want to redirect to login here
-      // window.location.href = '/login';
+      console.log("🔐 Authentication required");
+      // You might want to trigger a refresh token flow here
     }
     return Promise.reject(error);
   },

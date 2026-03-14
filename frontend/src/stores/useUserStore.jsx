@@ -42,11 +42,20 @@ export const useUserStore = create((set) => ({
         password,
       });
 
+      // Check if cookies were set
+      console.log("📝 Login response headers:", data);
+      console.log("🍪 Cookies after login:", document.cookie);
+
       toast.success(data.message);
       set({ user: data.user, loading: false });
+
+      // Test if cookies are working
+      setTimeout(() => {
+        console.log("🍪 Cookies after delay:", document.cookie);
+      }, 1000);
     } catch (error) {
       set({ loading: false });
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || "Login failed");
     }
   },
 
